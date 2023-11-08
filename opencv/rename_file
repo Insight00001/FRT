@@ -1,0 +1,27 @@
+import os
+import cv2
+
+def save_frame_cmaera_key(device_num,dir_path,base_name, ext=".jpg",delay = 1,window_name="frame"):
+    cap  = cv2.VideoCapture(device_num)
+    if not cap.isOpened():
+        return
+    
+    os.makedirs(dir_path, exist_ok=True)
+    
+    base_path = os.path.join(dir_path,base_name)
+    n=0
+    while True:
+        ret,frame = cap.read()
+        cv2.imshow("Capture Image",frame)
+        key = cv2.waitKey(delay)&0xFF
+        if key==ord('c'):    
+            cv2.imwrite("{}_{}.{}".format(base_path,n,ext),frame)
+        elif key==ord("q"):
+            break
+    cv2.destroyAllWindows()
+
+base_name = input("Enter your name: ")
+save_frame_cmaera_key(0,"Saved images",base_name)
+        
+
+
