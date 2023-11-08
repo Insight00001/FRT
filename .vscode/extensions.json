@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "sarrus.sourcepawn-vscode"
+        "sarrus.sourcepawn-vscode",
+        "ms-python.python"
     ]
 }

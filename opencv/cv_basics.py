@@ -59,7 +59,13 @@ class Operations:
         cv2.waitKey(0)
       
         return img_canny
-    def 
+    def img_canny_vid(self,img):
+        cap = cv2.VideoCapture(0)
+        while True:
+            ret,img = cap.read()
+            if not ret:
+                break
+            
     def read_image(self,name):
         img=cv2.imread(name,1)
         img= self.resize_img(img)
