@@ -65,7 +65,12 @@ class Operations:
             ret,img = cap.read()
             if not ret:
                 break
-            
+            img_canny = cv2.Canny(img,100,200)
+            cv2.imshow("Me",img)
+            if cv2.waitKey(0)&0XFF==ord('q'):
+                break
+        cap.release()
+        cv2.destroyAllWindows()
     def read_image(self,name):
         img=cv2.imread(name,1)
         img= self.resize_img(img)
@@ -81,7 +86,6 @@ class Operations:
         cv2.waitKey(0)
         return img
 
-    
     cv2.destroyAllWindows()
 
 
