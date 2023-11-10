@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 # read image from file
 class Operations:
@@ -51,26 +52,84 @@ class Operations:
         return rotated90
     def canny_edge(self,img):
         img = cv2.imread("josh.jpg")
-        
+        img = self.resize_img(img)
         img_canny = cv2.Canny(img, 100,200)
-        img_canny = self.resize_img(img_canny)
+        print(len(img_canny))
+      
         cv2.imshow("Canny",img_canny)
-        cv2.imwrite("Josh_canny.jpg",img_canny)
+      
         cv2.waitKey(0)
       
         return img_canny
-    def img_canny_vid(self,img):
+    def img_canny_vid(self):
         cap = cv2.VideoCapture(0)
         while True:
             ret,img = cap.read()
             if not ret:
                 break
-            img_canny = cv2.Canny(img,100,200)
-            cv2.imshow("Me",img)
+            # convert BGR to HSV
+            hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+            #define range of red color in HSV
+            lower_red =np.array((30,150,50))
+            upper_red = np.array((255,255,150))
+            # create a red HSV colour boundary and    
+            # threshold HSV image   
+            mask = cv2.inRange(hsv,lower_red,upper_red)
+            res = cv2.bitwise_and(img,img,mask=mask)
+            edges = cv2.Canny(img,100,200)
+            cv2.imshow("Me",edges)
             if cv2.waitKey(0)&0XFF==ord('q'):
                 break
         cap.release()
         cv2.destroyAllWindows()
+    
+    def bilateral_filter(self):
+        img = cv2.imread("josh.jpg")
+        img= self.resize_img(img)
+        blur = cv2.bilateralFilter(img,9,95,95)
+ 
+        
+        cv2.imshow("Blur",blur)
+        cv2.waitKey(0)
+    def boxfilter(self):
+        img = cv2.imread("josh.jpg")
+        img = self.resize_img(img)
+        img_1 = cv2.boxFilter(img,0,(5,5),img,(-1,-1),False,cv2.BORDER_DEFAULT)
+        cv2.imshow("BoxFilter",img_1)
+        cv2.waitKey(0)
+
+    def filter2d(self):
+        img= cv2.imread("josh.jpg")
+        img = self.resize_img(img)
+        kernel = np.ones((5,5),np.float32)/25
+        img_1 = cv2.filter2D(img,-1,kernel)
+
+        cv2.imshow("Filter 2D",img_1)
+        cv2.waitKey(0)
+
+    def threshold(self):
+        img = cv2.imread("josh.jpg")
+        img = self.resize_img(img)
+        retval,thres = cv2.threshold(img,62,255, cv2.THRESH_BINARY)
+        cv2.imshow("Threshold",thres)
+        cv2.waitKey(0)
+    def getContour(self):
+        img = cv2.imread("josh_bg.png")
+        #img = self.resize_img(img)
+        img_gray = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
+        ret,thes = cv2.threshold(img_gray,127,255,0)
+
+        contour,hierachy = cv2.findContours(thes,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+
+        cnt = contour[3]
+
+        cv2.drawContours(img,contour,-1,(0,255,0),5)
+
+        cv2.imshow("Img",img)
+        cv2.waitKey(0)
+
+    def adaptive_thresh(self):
+        pass
     def read_image(self,name):
         img=cv2.imread(name,1)
         img= self.resize_img(img)
@@ -91,5 +150,5 @@ class Operations:
 
 run = Operations()
 
-run.canny_edge("josh.jpg")
+run.getContour()
 
